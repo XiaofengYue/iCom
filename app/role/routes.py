@@ -26,7 +26,7 @@ def add_roles():
     p_id = request.form.get("role_id", None)
     p_name = request.form.get("role_name", None)
     p_desc = request.form.get("role_p_desc", None)
-    new_role = Role(role_id=p_id, role_name=p_name, role_p_desc=p_desc)
+    new_role = Role(role_id=p_id, role_name=p_name, role_desc=p_desc)
     db.session.add(new_role)
     db.session.commit()
     roles = Role.query.all()
