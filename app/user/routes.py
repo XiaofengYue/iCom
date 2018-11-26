@@ -21,7 +21,7 @@ def add_user():
     new_user = User(id=p_id, username=p_username, email=p_email, password=p_password)
     # db.session.add(new_user)
     # db.session.commit()
-    print(request.args)
+    print(request.args.to_dict())
     print(request.form)
     print(request.form['id'])
     print(request.form["id"])
