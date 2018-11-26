@@ -16,7 +16,7 @@ def return_json(code=0, msg='成功', data=None):
 @roles.route('/api/roles', methods=['GET'])
 def get_roles():
     roles = Role.query.all()
-    return_json(data=[role.to_dict() for role in roles])
+    return return_json(data=[role.to_dict() for role in roles])
 
 # 增
 
@@ -30,4 +30,4 @@ def add_roles():
     db.session.add(new_role)
     db.session.commit()
     roles = Role.query.all()
-    return_json(data=[role.to_dict() for role in roles])
+    return return_json(data=[role.to_dict() for role in roles])
