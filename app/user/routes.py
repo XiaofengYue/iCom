@@ -14,10 +14,10 @@ def get_users():
 
 @users.route('/api/users', methods=['POST'])
 def add_user():
-    p_id = request.form.get('id', None)
-    p_username = request.form.get('username', None)
-    p_email = request.form.get('email', None)
-    p_password = request.form.get('password', None)
+    p_id = request.form.get("id", None)
+    p_username = request.form.get("username", None)
+    p_email = request.form.get("email", None)
+    p_password = request.form.get("password", None)
     new_user = User(id=p_id, username=p_username, email=p_email, password=p_password)
     # db.session.add(new_user)
     # db.session.commit()
