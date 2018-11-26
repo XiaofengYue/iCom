@@ -11,4 +11,4 @@ class Role(db.Model):
         return '<ROLE>' + self.role_name
 
     def to_dict(self):
-        return {'role_id': role_id, 'role_name': role_name, 'role_desc': role_desc}
+        return {'role_id': self.role_id, 'role_name': self.role_name, 'role_desc': self.role_desc}
