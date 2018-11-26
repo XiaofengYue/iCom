@@ -22,6 +22,7 @@ def add_user():
     # db.session.add(new_user)
     # db.session.commit()
     print(request.form)
+    print(p_id)
     users = User.query.all()
     # print([user.to_dict() for user in users])
     return jsonify({'users': [user.to_dict() for user in users]})
