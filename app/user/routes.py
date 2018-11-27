@@ -44,7 +44,7 @@ def login():
 
 @users.route('/api/users/login2', methods=['POST'])
 def login2():
-    params = request.json()
+    params = request.json
     print(params)
     return {}
 
