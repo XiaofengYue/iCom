@@ -41,6 +41,13 @@ def login():
     else:
         return return_json(code=1, msg='账号尚未注册')
 
+
+@users.route('/api/users/login2', methods=['POST'])
+def login2():
+    params = request.json()
+    print(params)
+    return {}
+
 # 获得信息
 
 
