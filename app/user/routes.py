@@ -46,8 +46,8 @@ def add_user():
 def login():
     p_num = request.form.get("user_num")
     p_pwd = request.form.get("user_pwd")
-    if User.query.filter("user_num"=p_num).all():
-        if User.query.filter("user_num"=p_num, "user_pwd"=p_pwd).all():
+    if User.query.filter(user_num=p_num).all():
+        if User.query.filter(user_num=p_num, "user_pwd"=p_pwd).all():
             return return_json(data='token')
         else:
             return return_json(code=2, msg='账号密码错误')
@@ -58,7 +58,7 @@ def login():
 @users.route('/api/users/message', methods=['POST'])
 def get_usermsg():
     p_num = request.form.get("user_num")
-    user = User.query.filter("user_num"=p_num).all()
+    user = User.query.filter(user_num=p_num).all()
     if user:
         user = user[0].to_dict()
         return return_json(data=user)
