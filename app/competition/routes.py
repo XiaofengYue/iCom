@@ -16,7 +16,7 @@ def get_by_page():
     try:
         p_page = int(request.json.get("page"))
         p_pageSize = int(request.json.get("pageSize"))
-        all_compe = Competition.query.limit(p_pageSize).offset((p_page - 1) * p_pageSize).all()
+        all_compe = Competition.query.order_by(Competition.com_id.desc()).limit(p_pageSize).offset((p_page - 1) * p_pageSize).all()
         return return_json(data=[comp.to_dict() for comp in all_compe])
     except Exception:
         return return_json(code=0, msg='请求参数有误')
