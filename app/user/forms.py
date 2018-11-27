@@ -5,7 +5,6 @@ from app import db
 class User(db.Model):
     __tablename__ = 'users'
     user_num = db.Column(db.Integer, primary_key=True)
-    user_pwd = db.Column(db.String(45))
     user_roleid = db.Column(db.Integer, db.ForeignKey('roles.role_id'))
     user_name = db.Column(db.String(45), nullable=True)
     user_truename = db.Column(db.String(45), nullable=True)
