@@ -16,4 +16,6 @@ def create_app(config_class=Config):
     app.register_blueprint(users)
     from app.role.routes import roles
     app.register_blueprint(roles)
+    from app.competition.routes import competitions
+    app.register_blueprint(competitions)
     return app
