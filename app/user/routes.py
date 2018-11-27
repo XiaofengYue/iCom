@@ -18,7 +18,8 @@ def add_user():
     p_pwd = request.form.get("user_pwd")
     if User.query.filter(User.user_num == p_num).all():
         return return_json(code=1, msg='账号已被注册')
-    new_user = User(user_num=p_num, user_pwd=p_pwd, user_roleid=1)
+    new_user = User(user_num=p_num, user_roleid=1)
+    new_user.hash_password(p_pwd)
     db.session.add(new_user)
     db.session.commit()
     return return_json()
@@ -30,8 +31,10 @@ def add_user():
 def login():
     p_num = request.form.get("user_num")
     p_pwd = request.form.get("user_pwd")
-    if User.query.filter(User.user_num == p_num).all():
-        if User.query.filter(User.user_num == p_num, User.user_pwd == p_pwd).all():
+    user = User.query.filter(User.user_num == p_num).all()
+    if user:
+        user = user[0]
+        if user.verify_password(p_pwd):
             return return_json(data='token')
         else:
             return return_json(code=2, msg='账号密码错误')
