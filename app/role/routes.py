@@ -7,7 +7,7 @@ roles = Blueprint('roles', __name__)
 # 返回
 
 
-def return_json(code=0, msg='成功', data=None):
+def return_json(code=200, msg='成功', data=None):
     return jsonify({'code': code, 'msg': msg, 'data': data})
 
 # 查
