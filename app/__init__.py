@@ -20,4 +20,6 @@ def create_app(config_class=Config):
     app.register_blueprint(competitions)
     from app.collection.routes import collections
     app.register_blueprint(collections)
+    from app.focus.routes import focus
+    app.register_blueprint(focus)
     return app
