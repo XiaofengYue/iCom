@@ -1,8 +1,10 @@
 from flask import Blueprint, jsonify, request
 from app import db
 from app.competition.forms import Competition, Comtype
+from app.user.forms import User
 import json
 import datetime
+from sqlalchemy import or_
 
 
 competitions = Blueprint('competitions', __name__)
@@ -77,5 +79,23 @@ def get_type_page():
         p_type = request.json.get("type")
         all_compe = Competition.query.filter(Comtype.comtype_typename == p_type).join(Comtype, Comtype.comtype_comid == Competition.com_id).order_by(Competition.com_id.desc()).limit(p_pageSize).offset((p_page - 1) * p_pageSize).all()
         return return_json(data=[comp.to_dict() for comp in all_compe])
+    except Exception:
+        return return_json(code=0, msg='请求参数有误')
+
+
+@competitions.route('/api/competitions/search', methods=['POST'])
+def search():
+    try:
+        p_page = int(request.json.get("page"))
+        p_pageSize = int(request.json.get("pageSize"))
+        p_words = request.json.get("words")
+        p_words = p_words.split(' ')
+        p_words = ['%' + word + '%' for word in p_words]
+        title_rule = or_(*[Competition.com_title.like(w) for w in p_words])
+        type_rule = or_(*[Competition.com_type.like(w) for w in p_words])
+        user_rule = or_(*[User.user_name.like(w) for w in p_words])
+        all_compe = Competition.query.filter(or_(title_rule, type_rule)).order_by(Competition.com_id.desc()).limit(p_pageSize).offset((p_page - 1) * p_pageSize).all()
+        all_users = User.query.filter(user_rule).limit(p_pageSize).offset((p_page - 1) * p_pageSize).all()
+        return return_json(data={'competitions': [comp.to_dict() for comp in all_compe], 'users': [user.to_dict() for user in all_users]})
     except Exception:
         return return_json(code=0, msg='请求参数有误')

@@ -28,7 +28,30 @@ def add_user():
     except Exception:
         return return_json(code=0, msg='账号密码格式错误')
 
-        # 登录
+# 修改密码
+
+
+@users.route('/api/users/updatepwd', methods=['POST'])
+def update_pwd():
+    try:
+        p_num = int(request.json.get("user_num"))
+        p_pwd = request.json.get("user_pwd")
+        p_newpwd = request.json.get("new_pwd")
+        user = User.query.filter(User.user_num == p_num).first()
+        if user:
+            if user.verify_password(p_pwd):
+                user.hash_password(p_newpwd)
+                db.session.commit()
+                return return_json()
+            else:
+                return return_json(code=2, msg='原密码错误')
+        else:
+            return return_json(code=1, msg='此用户不存在')
+    except Exception:
+        return return_json(code=0, msg='请求参数错误')
+
+
+# 登录
 
 
 @users.route('/api/users/login', methods=['POST'])
