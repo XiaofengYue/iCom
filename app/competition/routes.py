@@ -75,7 +75,7 @@ def get_type_page():
         p_page = int(request.json.get("page"))
         p_pageSize = int(request.json.get("pageSize"))
         p_type = request.json.get("type")
-        all_compe = Competition.query.filter(Comtype.comtype_typename == p_type).join(Comtype, Comtype.comtype_comid == Competition.com_id).limit(p_pageSize).offset((p_page - 1) * p_pageSize).all()
+        all_compe = Competition.query.filter(Comtype.comtype_typename == p_type).join(Comtype, Comtype.comtype_comid == Competition.com_id).order_by(Competition.com_id.desc()).limit(p_pageSize).offset((p_page - 1) * p_pageSize).all()
         return return_json(data=[comp.to_dict() for comp in all_compe])
     except Exception:
         return return_json(code=0, msg='请求参数有误')
