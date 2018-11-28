@@ -21,7 +21,20 @@ class Competition(db.Model):
     com_browse = db.Column(db.Integer)
 
     def __repr__(self):
-        return '<COMPETITION:>' + self.com_id
+        return '<COMPETITION:>' + str(self.com_id)
 
     def to_dict(self):
         return {"com_id": self.com_id, "com_url": self.com_url, "com_squrl": self.com_squrl, "com_picture": self.com_picture, "com_title": self.com_title, "com_signupstart": self.com_signupstart, "com_signupend": self.com_signupend, "com_starttime": self.com_starttime, "com_endtime": self.com_endtime, "com_sponsor": self.com_sponsor, "com_publisher": self.com_publisher, "com_level": self.com_level, "com_type": self.com_type, "com_mode": self.com_mode, "com_object": self.com_object, "com_browse": self.com_browse}
+
+
+class Comtype(db.Model):
+    __tablename__ = 'comtypes'
+    comtype_id = db.Column(db.Integer, primary_key=True)
+    comtype_comid = db.Column(db.Integer, db.ForeignKey('competitions.com_id'))
+    comtype_typename = db.Column(db.String(45))
+
+    def __repr__(self):
+        return '<COMTYPE:>' + str(self.comtype_id)
+
+    def to_dict(self):
+        return {"comtype_id": self.comtype_id, "comtype_comid": self.comtype_comid, "comtype_typename": self.comtype_typename}
