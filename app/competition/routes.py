@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify, request
 from app import db
 from app.competition.forms import Competition
 import json
+import datetime
 
 
 competitions = Blueprint('competitions', __name__)
@@ -19,7 +20,6 @@ def get_by_page():
         all_compe = Competition.query.order_by(Competition.com_id.desc()).limit(p_pageSize).offset((p_page - 1) * p_pageSize).all()
         return return_json(data=[comp.to_dict() for comp in all_compe])
     except Exception as e:
-        print(e)
         return return_json(code=0, msg='请求参数有误')
 
 
@@ -34,3 +34,15 @@ def get_by_id():
             return return_json(code=0, msg='无此ID内容')
     except Exception:
         return return_json(code=0, msg='参数错误')
+
+
+@competitions.route('/api/competitions/hot', methods=['POST'])
+def get_hot_page():
+    try:
+        p_page = int(request.json.get("page"))
+        p_pageSize = int(request.json.get("pageSize"))
+        all_compe = Competition.query.filter(datetime.datetime.strftime(datetime.datetime.now(), '%Y.%m.%d %H:%M') < Competition.com_endtime).order_by(Competition.com_browse.desc()).limit(p_pageSize).offset((p_page - 1) * p_pageSize).all()
+        return return_json(data=[comp.to_dict() for comp in all_compe])
+    except Exception:
+
+        return return_json(code=0, msg='请求参数有误')
