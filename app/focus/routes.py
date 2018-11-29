@@ -1,5 +1,5 @@
-from flask import Blueprint, jsonify, request
-from app import db
+from flask import Blueprint, jsonify, request, g
+from app import db, auth
 from app.focus.forms import Focus
 from app.user.forms import User
 from sqlalchemy import and_
@@ -22,14 +22,15 @@ def get_focus():
         all_stars = User.query.filter(User.user_num == Focus.foc_star).join(Focus, Focus.foc_master == p_master).order_by(Focus.foc_id.desc()).limit(p_pageSize).offset((p_page - 1) * p_pageSize).all()
         return return_json(data=[star.to_dict() for star in all_stars])
     except Exception:
-        return return_json(code=0, msg='参数错误')
+        return return_json(code=0, msg='请求参数错误')
 
 
 # 增加
 @focus.route('/api/focus/add', methods=['POST'])
+@auth.login_required
 def add_focus():
     try:
-        p_master = int(request.json.get("master"))
+        p_master = g.user.user_num
         p_star = int(request.json.get("star"))
         if p_master == p_star:
             return return_json(code=2, msg='不能关注自己')
@@ -43,14 +44,15 @@ def add_focus():
                 db.session.commit()
                 return return_json()
     except Exception:
-        return return_json(code=0, msg='参数错误')
+        return return_json(code=0, msg='请求参数错误')
 
 
 # 删除
 @focus.route('/api/focus/delete', methods=['POST'])
+@auth.login_required
 def delete_focus():
     try:
-        p_master = int(request.json.get("master"))
+        p_master = g.user.user_num
         p_star = int(request.json.get("star"))
         all_focus = Focus.query.filter(and_(Focus.foc_master == p_master, Focus.foc_star == p_star)).first()
         if all_focus:
@@ -60,4 +62,4 @@ def delete_focus():
         else:
             return return_json(code=1, msg='尚未关注')
     except Exception:
-        return return_json(code=0, msg='参数错误')
+        return return_json(code=0, msg='请求参数错误')

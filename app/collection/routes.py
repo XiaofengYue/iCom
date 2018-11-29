@@ -1,5 +1,5 @@
-from flask import Blueprint, jsonify, request
-from app import db
+from flask import Blueprint, jsonify, request, g
+from app import db, auth
 from app.collection.forms import Collection
 from app.competition.forms import Competition
 
@@ -13,18 +13,19 @@ def return_json(code=200, msg='成功', data=None):
 
 
 @collections.route('/api/collections/byid', methods=['POST'])
+@auth.login_required
 def get_byid():
     try:
-        p_usernum = int(request.json.get("usernum"))
+        p_usernum = g.user.user_num
         p_comid = int(request.json.get("comid"))
         p_album = request.json.get("album")
         old_col = Collection.query.filter(Collection.col_usernum == p_usernum, Collection.col_comid == p_comid, Collection.col_album == p_album).all()
         if old_col:
-            return return_json(data=old_col[0].to_dict())
+            return return_json(data='True')
         else:
-            return return_json(code=1, msg='此信息未被收藏')
+            return return_json(data='False')
     except Exception:
-        return return_json(code=0, msg='请求参数有误')
+        return return_json(code=0, msg='请求参数错误')
 
 # 查
 
@@ -38,15 +39,16 @@ def get_collections_page():
         all_compe = Competition.query.filter(Collection.col_usernum == p_usernum).join(Collection, Competition.com_id == Collection.col_comid).order_by(Collection.col_id.desc()).limit(p_pageSize).offset((p_page - 1) * p_pageSize).all()
         return return_json(data=[comp.to_dict() for comp in all_compe])
     except Exception:
-        return return_json(code=0, msg='请求参数有误')
+        return return_json(code=0, msg='请求参数错误')
 
 # 增
 
 
 @collections.route('/api/collections/add', methods=['POST'])
+@auth.login_required
 def add_collections():
     try:
-        p_usernum = int(request.json.get("usernum"))
+        p_usernum = g.user.user_num
         p_comid = int(request.json.get("comid"))
         p_album = request.json.get("album")
         old_col = Collection.query.filter(Collection.col_usernum == p_usernum, Collection.col_comid == p_comid, Collection.col_album == p_album).all()
@@ -57,14 +59,15 @@ def add_collections():
         db.session.commit()
         return return_json()
     except Exception:
-        return return_json(code=0, msg='请求参数有误')
+        return return_json(code=0, msg='请求参数错误')
 # 删
 
 
 @collections.route('/api/collections/delete', methods=['POST'])
+@auth.login_required
 def delete_collections():
     try:
-        p_usernum = int(request.json.get("usernum"))
+        p_usernum = g.user.user_num
         p_comid = int(request.json.get("comid"))
         p_album = request.json.get("album")
         old_col = Collection.query.filter(Collection.col_usernum == p_usernum, Collection.col_comid == p_comid, Collection.col_album == p_album).first()
@@ -75,4 +78,4 @@ def delete_collections():
         else:
             return return_json(code=1, msg='查无此条记录')
     except Exception:
-        return return_json(code=0, msg='请求参数有误')
+        return return_json(code=0, msg='请求参数错误')

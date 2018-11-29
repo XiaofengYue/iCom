@@ -2,7 +2,6 @@ from flask import Blueprint, jsonify, request
 from app import db
 from app.competition.forms import Competition, Comtype
 from app.user.forms import User
-import json
 import datetime
 from sqlalchemy import or_
 

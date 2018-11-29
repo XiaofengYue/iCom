@@ -1,16 +1,32 @@
-from flask import Blueprint, jsonify, request
-from app import db
+from flask import Blueprint, jsonify, request, g
+from app import db, auth
 from app.user.forms import User
-import json
 
 users = Blueprint('users', __name__)
 
-# 返回
+
+@auth.verify_password
+def verify_password(username_or_token, password):
+    # first try to authenticate by token
+    user = User.verify_auth_token(username_or_token)
+    if not user:
+        # try to authenticate with username/password
+        user = User.query.filter_by(user_num=username_or_token).first()
+        if not user or not user.verify_password(password):
+            return False
+    g.user = user
+    return True
 
 
 def return_json(code=200, msg='成功', data=None):
     return jsonify({'code': code, 'msg': msg, 'data': data})
-# 注册
+
+
+'''
+@Method:    注册
+@Parameter: 1>>user_num 2>>user_pwd
+@Return:
+'''
 
 
 @users.route('/api/users/register', methods=['POST'])
@@ -26,18 +42,23 @@ def add_user():
         db.session.commit()
         return return_json()
     except Exception:
-        return return_json(code=0, msg='账号密码格式错误')
+        return return_json(code=0, msg='请求参数错误')
 
-# 修改密码
+
+'''
+@Method:    修改密码
+@Parameter: 1>>user_pwd 2>>new_pwd
+@Return:
+'''
 
 
 @users.route('/api/users/updatepwd', methods=['POST'])
+@auth.login_required
 def update_pwd():
     try:
-        p_num = int(request.json.get("user_num"))
         p_pwd = request.json.get("user_pwd")
         p_newpwd = request.json.get("new_pwd")
-        user = User.query.filter(User.user_num == p_num).first()
+        user = g.user
         if user:
             if user.verify_password(p_pwd):
                 user.hash_password(p_newpwd)
@@ -51,7 +72,11 @@ def update_pwd():
         return return_json(code=0, msg='请求参数错误')
 
 
-# 登录
+'''
+@Method:    登录
+@Parameter: 1>>user_num 2>>user_pwd
+@Return:    token
+'''
 
 
 @users.route('/api/users/login', methods=['POST'])
@@ -63,40 +88,52 @@ def login():
         if user:
             user = user[0]
             if user.verify_password(p_pwd):
-                return return_json(data='token')
+                g.user = user
+                token = g.user.generate_auth_token()
+                print(token.decode('ascii'))
+                return return_json(data=[{'token:': token.decode('ascii')}])
             else:
                 return return_json(code=2, msg='账号密码错误')
         else:
             return return_json(code=1, msg='账号尚未注册')
     except Exception:
-        return return_json(code=0, msg='账号格式错误')
+        return return_json(code=0, msg='请求参数错误')
 
 
-# 获得信息
+'''
+@Method:    获得用户资料
+@Parameter: user_num
+@Return:    User
+'''
 
 
 @users.route('/api/users/message', methods=['POST'])
 def get_usermsg():
     try:
-        p_num = int(request.json.get("user_num"))
-        user = User.query.filter(User.user_num == p_num).all()
+        user_num = int(request.json.get("user_num"))
+        user = User.query.filter(User.user_num == user_num).first()
         if user:
-            user = user[0].to_dict()
-            return return_json(data=user)
+            return return_json(data=user.to_dict())
         else:
-            return return_json(code=0, msg='查询失败')
-    except Exception:
-        return return_json(code=0, msg='账号格式错误')
-# 更改信息
+            return return_json(code=1, msg='查询失败')
+    except Exception as e:
+        raise e
+        return return_json(code=0, msg='请求参数错误')
+
+
+'''
+@Method:    更新用户资料
+@Parameter: NUll
+@Return:
+'''
 
 
 @users.route('/api/users/update', methods=['POST'])
+@auth.login_required
 def update_user():
     try:
-        p_num = int(request.json.get("user_num"))
-        user = User.query.filter(User.user_num == p_num).all()
+        user = g.user
         if user:
-            user = user[0]
             user.user_name = request.json.get("user_name", user.user_name)
             user.user_sex = request.json.get("user_sex", user.user_sex)
             user.user_birthday = request.json.get("user_birthday", user.user_birthday)
@@ -105,6 +142,6 @@ def update_user():
             db.session.commit()
             return return_json()
         else:
-            return return_json(code=0, msg='无此用户')
+            return return_json(code=1, msg='无此用户')
     except Exception:
-        return return_json(code=0, msg='无此用户')
+        return return_json(code=0, msg='请求参数错误')
