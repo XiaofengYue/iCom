@@ -22,4 +22,6 @@ def create_app(config_class=Config):
     app.register_blueprint(collections)
     from app.focus.routes import focus
     app.register_blueprint(focus)
+    from app.interest.routes import interests
+    app.register_blueprint(interests)
     return app
