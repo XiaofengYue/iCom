@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from app import db
+from app import db, auth
 from app.competition.forms import Competition, Comtype
 from app.user.forms import User
 import datetime
@@ -14,6 +14,7 @@ def return_json(code=200, msg='成功', data=None):
 
 
 @competitions.route('/api/competitions/bypage', methods=['POST'])
+@auth.login_required
 def get_by_page():
     try:
         p_page = int(request.json.get("page"))
