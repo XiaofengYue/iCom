@@ -14,7 +14,6 @@ def return_json(code=200, msg='成功', data=None):
 
 
 @competitions.route('/api/competitions/bypage', methods=['POST'])
-@auth.login_required
 def get_by_page():
     try:
         p_page = int(request.json.get("page"))
