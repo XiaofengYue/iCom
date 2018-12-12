@@ -53,6 +53,7 @@ def add_user():
 @users.route('/api/users/updatepwd', methods=['POST'])
 @auth.login_required
 def update_pwd():
+    print(request.headers)
     try:
         p_pwd = request.json.get("user_pwd")
         p_newpwd = request.json.get("new_pwd")
