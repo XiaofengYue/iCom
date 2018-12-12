@@ -4,7 +4,7 @@ from app.competition.forms import Competition, Comtype
 from app.interest.forms import Interest
 from app.user.forms import User
 import datetime
-from sqlalchemy import or_
+from sqlalchemy import or_, and_
 
 
 competitions = Blueprint('competitions', __name__)
@@ -19,7 +19,7 @@ def get_by_page():
     try:
         p_page = int(request.json.get("page"))
         p_pageSize = int(request.json.get("pageSize"))
-        all_compe = Competition.query.order_by(Competition.com_id.desc()).limit(p_pageSize).offset((p_page - 1) * p_pageSize).all()
+        all_compe = Competition.query.filter(Competition.com_url != '').order_by(Competition.com_id.desc()).limit(p_pageSize).offset((p_page - 1) * p_pageSize).all()
         return return_json(data=[comp.to_dict() for comp in all_compe])
     except Exception:
         return return_json(code=0, msg='请求参数有误')
@@ -43,7 +43,7 @@ def get_hot_page():
     try:
         p_page = int(request.json.get("page"))
         p_pageSize = int(request.json.get("pageSize"))
-        all_compe = Competition.query.filter(datetime.datetime.strftime(datetime.datetime.now(), '%Y.%m.%d %H:%M') < Competition.com_endtime).order_by(Competition.com_browse.desc()).limit(p_pageSize).offset((p_page - 1) * p_pageSize).all()
+        all_compe = Competition.query.filter(and_(Competition.com_url != '', datetime.datetime.strftime(datetime.datetime.now(), '%Y.%m.%d %H:%M') < Competition.com_endtime)).order_by(Competition.com_browse.desc()).limit(p_pageSize).offset((p_page - 1) * p_pageSize).all()
         return return_json(data=[comp.to_dict() for comp in all_compe])
     except Exception:
 
@@ -65,11 +65,11 @@ def get_recommends():
             all_comids = Comtype.query.filter(rule).group_by(Comtype.comtype_comid).all()
             all_comids = [com.comtype_comid for com in all_comids]
             rule = or_(*[Competition.com_id == c for c in all_comids])
-            all_coms = Competition.query.filter(rule).order_by(Competition.com_id.desc()).limit(p_pageSize).offset((p_page - 1) * p_pageSize).all()
+            all_coms = Competition.query.filter(and_(Competition.com_url != '', rule)).order_by(Competition.com_id.desc()).limit(p_pageSize).offset((p_page - 1) * p_pageSize).all()
             return return_json(data=[com.to_dict() for com in all_coms])
         else:
             rand = datetime.datetime.now().second % 8 + 2
-            all_coms = Competition.query.filter(Competition.com_id % rand == 0).order_by(Competition.com_id.desc()).limit(p_pageSize).offset((p_page - 1) * p_pageSize).all()
+            all_coms = Competition.query.filter(and_(Competition.com_url != '', Competition.com_id % rand == 0)).order_by(Competition.com_id.desc()).limit(p_pageSize).offset((p_page - 1) * p_pageSize).all()
             return return_json(data=[com.to_dict() for com in all_coms])
     except Exception as e:
         raise e
