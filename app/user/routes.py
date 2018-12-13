@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request, g
 from app import db, auth
 from app.user.forms import User
+import base64
 
 users = Blueprint('users', __name__)
 
@@ -140,10 +141,20 @@ def update_user():
             user.user_sex = request.json.get("user_sex", user.user_sex)
             user.user_birthday = request.json.get("user_birthday", user.user_birthday)
             user.user_interest = request.json.get("user_interest", user.user_interest)
-            user.user_headimage = request.json.get("user_headimage", user.user_headimage)
+
+            user_headimage = request.json.get("user_headimage")
+            if user_headimage:
+                print('有图片上传')
+                img = base64.b64decode(user_headimage)
+                path = '/home/yxf/myproject/flask_demo/flaskblog/static/iCom_images/' + str(user.user_num) + '.jpg'
+                with open(path, 'wb') as f:
+                    f.write(img)
+                    print('写入成功')
+                user.user_headimage = 'http://www.pipicat.top/static/iCom_images/' + str(user.user_num) + '.jpg'
             db.session.commit()
             return return_json()
         else:
             return return_json(code=1, msg='无此用户')
-    except Exception:
+    except Exception as e:
+        raise e
         return return_json(code=0, msg='请求参数错误')
