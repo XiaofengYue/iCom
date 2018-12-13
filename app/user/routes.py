@@ -8,7 +8,10 @@ users = Blueprint('users', __name__)
 @auth.verify_password
 def verify_password(username_or_token, password):
     # first try to authenticate by token
-    print('用户鉴权的用户名或token:' + username_or_token)
+    print('用户鉴权的用户名或token:' + str(username_or_token))
+    print(password)
+    if not username_or_token:
+        return False
     user = User.verify_auth_token(username_or_token)
     if not user:
         return False
