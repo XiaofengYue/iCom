@@ -11,7 +11,7 @@ def return_json(code=200, msg='成功', data=None):
     return jsonify({'code': code, 'msg': msg, 'data': data})
 
 
-@focus.route('api/focus/search', methods=['POST'])
+@focus.route('/api/focus/search', methods=['POST'])
 @auth.login_required
 def search_focus():
     try:
