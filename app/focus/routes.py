@@ -10,6 +10,19 @@ focus = Blueprint('focus', __name__)
 def return_json(code=200, msg='成功', data=None):
     return jsonify({'code': code, 'msg': msg, 'data': data})
 
+
+@focus.route('api/focus/search', methods=['POST'])
+@auth.login_required
+def search_focus():
+    try:
+        p_master = g.user.user_num
+        p_other_num = int(request.json.get("other_num"))
+        if Focus.query.filter(and_(Focus.foc_master == p_master, Focus.foc_star == p_other_num)).all():
+            return return_json(data='已关注')
+        else:
+            return return_json(data='未关注')
+    except Exception:
+        return return_json(code=0, msg='请求参数错误')
 # 查
 
 

@@ -144,17 +144,14 @@ def update_user():
 
             user_headimage = request.json.get("user_headimage")
             if user_headimage:
-                print('有图片上传')
                 img = base64.b64decode(user_headimage)
                 path = '/home/yxf/myproject/flask_demo/flaskblog/static/iCom_images/' + str(user.user_num) + '.jpg'
                 with open(path, 'wb') as f:
                     f.write(img)
-                    print('写入成功')
                 user.user_headimage = 'http://www.pipicat.top/static/iCom_images/' + str(user.user_num) + '.jpg'
             db.session.commit()
             return return_json()
         else:
             return return_json(code=1, msg='无此用户')
-    except Exception as e:
-        raise e
+    except Exception:
         return return_json(code=0, msg='请求参数错误')
