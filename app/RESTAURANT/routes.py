@@ -87,7 +87,7 @@ def get_com_id():
 def get_msg():
     try:
         # 餐厅类型比例图
-        cat_count = Rest.query(Rest.item_cat, func.count(Rest.item_cat)).group_by(Rest.item_cat).all()
+        cat_count = Rest.query(func.count(Rest.item_cat)).group_by(Rest.item_cat).all()
         print(cat_count)
         print(type(cat_count))
 
