@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify, request
 from app.RESTAURANT.forms import Rest, Useritem
 import jieba
 from wordcloud import WordCloud
+from sqlalchemy import func
 
 rests = Blueprint('rests', __name__)
 
@@ -45,7 +46,7 @@ def get_pic_id():
 
 def get_pic(books):
     words = jieba.lcut(books)
-    excludes = {'团购','点评','这么','就是','只是','有点','今天','这么','为啥','下次','里面'}
+    excludes = {'团购', '点评', '这么', '就是', '只是', '有点', '今天', '这么', '为啥', '下次', '里面'}
     counts = {}
     for word in words:
         if len(word) == 1:
@@ -79,4 +80,16 @@ def get_com_id():
         items = Useritem.query.filter(Useritem.item_id == p_id).all()
         return return_json(data=[item.to_dict() for item in items])
     except Exception:
+        return return_json(code=0, msg='失败')
+
+
+@rests.route('/rest/msg')
+def get_msg():
+    try:
+        # 餐厅类型消费次数
+        data = Useritem.query(Useritem.item_cat, func.count(Useritem.item_cat)).group_by(Useritem.item_cat).all()
+        print(data)
+        print(type(data))
+    except Exception as e:
+        raise e
         return return_json(code=0, msg='失败')
