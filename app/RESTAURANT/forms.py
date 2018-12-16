@@ -76,3 +76,41 @@ class Useritem(db.Model):
             'recommend': self.recommend,
             'user_name': self.user_name,
             'user_rank': self.user_rank}
+
+class Msg(db.Model):
+    __tablename__ = 'MSG'
+
+    NAME = db.Column(db.String(45), primary_key=True)
+    ALLSUM = db.Column(db.String(9), nullable=True)
+    ONE = db.Column(db.String(9), nullable=True)
+    TWO = db.Column(db.String(9), nullable=True)
+    THREE = db.Column(db.String(9), nullable=True)
+    FOUR = db.Column(db.String(9), nullable=True)
+    FIVE = db.Column(db.String(9), nullable=True)
+    SIX = db.Column(db.String(9), nullable=True)
+    SEVEN = db.Column(db.String(9), nullable=True)
+    EIGHT = db.Column(db.String(9), nullable=True)
+    NINE = db.Column(db.String(9), nullable=True)
+    TEN = db.Column(db.String(9), nullable=True)
+    ELEVEN = db.Column(db.String(9), nullable=True)
+    TWELVE = db.Column(db.String(9), nullable=True)
+
+    def to_dict(self):
+        return {
+            'NAME':self.NAME,
+            'ALLSUM':self.ALLSUM,
+            'ONE':self.ONE,
+            'TWO':self.TWO,
+            'THREE':self.THREE,
+            'FOUR':self.FOUR,
+            'FIVE':self.FIVE,
+            'SIX':self.SIX,
+            'SEVEN':self.SEVEN,
+            'EIGHT':self.EIGHT,
+            'NINE':self.NINE,
+            'TEN':self.TEN,
+            'ELEVEN':self.ELEVEN,
+            "TWELVE":self.TWELVE
+        }
+
+

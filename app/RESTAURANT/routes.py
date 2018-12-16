@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from app.RESTAURANT.forms import Rest, Useritem
+from app.RESTAURANT.forms import Rest, Useritem, Msg
 import jieba
 from wordcloud import WordCloud
 from sqlalchemy import func
@@ -86,10 +86,8 @@ def get_com_id():
 @rests.route('/rest/msg', methods=['POST'])
 def get_msg():
     try:
-        # 餐厅类型比例图
-        cat_count = Rest.query.group_by(Rest.item_cat).all()
-        cat = [cate.item_cat for cate in cat_count]
-        return return_json(data=cat)
+        msgs = Msg.query.all()
+        return return_json(data=[msg.to_dict() for msg in msgs])
     except Exception as e:
         raise e
         return return_json(code=0, msg='失败')
