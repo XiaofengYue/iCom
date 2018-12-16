@@ -1,6 +1,5 @@
 from flask import Blueprint, jsonify, request
-from app import db
-from app.role.forms import Rest, Useritem
+from app.RESTAURANT.forms import Rest, Useritem
 import jieba
 from wordcloud import WordCloud
 
