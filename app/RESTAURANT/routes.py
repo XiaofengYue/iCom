@@ -33,7 +33,7 @@ def get_pic_id():
         items = Useritem.query.filter(Useritem.item_id == p_id).all()
         books = ''
         for item in items:
-            books += item['review']
+            books += item.review
         print(books)
         if get_pic(books):
             return return_json(data='http://www.pipicat.top/static/iCom_images/ciyun.jpg')
