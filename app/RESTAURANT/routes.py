@@ -45,7 +45,7 @@ def get_pic_id():
 
 def get_pic(books):
     words = jieba.lcut(books)
-    excludes = {}
+    excludes = {'团购','点评','这么','就是','只是','有点','今天','这么','为啥','下次','里面'}
     counts = {}
     for word in words:
         if len(word) == 1:
