@@ -14,7 +14,7 @@ def return_json(code=200, msg='成功', data=None):
 @rests.route('/rest/allrest', methods=['POST'])
 def get_all():
     rests = Rest.query.all()
-    return return_json(data=[rest.to_smalldict() for rest in rests])
+    return return_json(data=[rest.to_dict() for rest in rests])
 
 
 @rests.route('/rest/byid', methods=['POST'])
@@ -94,3 +94,11 @@ def get_msg():
     except Exception as e:
         raise e
         return return_json(code=0, msg='失败')
+
+@rests.route('/rest/allcom', methods = ['POST'])
+def get_all_com_date():
+    try:
+        items = Useritem.query.all()
+        return return_json(data=[item.times for item in items])
+    except Exception:
+        return return_json(code=0,msg='失败')
