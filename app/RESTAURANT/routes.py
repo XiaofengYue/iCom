@@ -87,12 +87,12 @@ def get_com_id():
 def get_msg():
     try:
         # 餐厅类型比例图
-        cat_count = Rest.query(Rest.item_cat).group_by(Rest.item_cat).all()
+        cat_count = Rest.query.group_by(Rest.item_cat).all()
         print(cat_count)
         print(type(cat_count))
 
         # 一年各餐厅消费次数
-        consumer_count = Useritem.query(Rest.item_cat, func.count(Useritem)).join(Rest, Rest.item_id == Useritem.item_id).group_by(Rest.item_cat).all()
+        consumer_count = Useritem.query.join(Rest, Rest.item_id == Useritem.item_id).group_by(Rest.item_cat).all()
         print(consumer_count)
         print(type(consumer_count))
     except Exception as e:
