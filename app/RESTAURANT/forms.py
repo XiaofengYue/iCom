@@ -38,6 +38,14 @@ class Rest(db.Model):
                 'lng': self.lng,
                 'lat': self.lat}
 
+    def to_smalldict(self):
+        return {
+            'item_id': self.item_id,
+            'name': self.name,
+            'lng': self.lng,
+            'lat': self.lat
+        }
+
 
 class Useritem(db.Model):
     __tablename__ = 'USERITEM'

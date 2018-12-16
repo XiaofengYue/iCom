@@ -14,7 +14,7 @@ def return_json(code=200, msg='成功', data=None):
 @rests.route('/rest/allrest', methods=['POST'])
 def get_all():
     rests = Rest.query.all()
-    return return_json(data=[rest.to_dict() for rest in rests])
+    return return_json(data=[rest.to_smalldict() for rest in rests])
 
 
 @rests.route('/rest/byid', methods=['POST'])
@@ -87,7 +87,10 @@ def get_com_id():
 def get_msg():
     try:
         msgs = Msg.query.all()
-        return return_json(data=[msg.to_dict() for msg in msgs])
+        tasts = Rest.query.order_by(Rest.tast.desc()).limit(5)
+        environments = Rest.query.order_by(Rest.environment.desc()).limit(5)
+        services = Rest.query.order_by(Rest.service.desc()).limit(5)
+        return return_json(data={"type":[msg.to_dict() for msg in msgs], "tasts": [tast.to_dict() for tast in tasts], "environments": [tast.to_dict() for tast in environments], "services": [tast.to_dict() for tast in services]})
     except Exception as e:
         raise e
         return return_json(code=0, msg='失败')
