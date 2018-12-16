@@ -26,4 +26,6 @@ def create_app(config_class=Config):
     app.register_blueprint(focus)
     from app.interest.routes import interests
     app.register_blueprint(interests)
+    from app.RESTAURANT.routes import rests
+    app.register_blueprint(rests)
     return app
