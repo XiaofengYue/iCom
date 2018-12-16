@@ -88,13 +88,8 @@ def get_msg():
     try:
         # 餐厅类型比例图
         cat_count = Rest.query.group_by(Rest.item_cat).all()
-        print(cat_count)
-        print(type(cat_count))
-
-        # 一年各餐厅消费次数
-        consumer_count = Useritem.query.join(Rest, Rest.item_id == Useritem.item_id).group_by(Rest.item_cat).all()
-        print(consumer_count)
-        print(type(consumer_count))
+        cat = [cate.item_cat for cate in cat_count]
+        return return_json(data=cat)
     except Exception as e:
         raise e
         return return_json(code=0, msg='失败')
