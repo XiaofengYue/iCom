@@ -86,10 +86,15 @@ def get_com_id():
 @rests.route('/rest/msg', methods=['POST'])
 def get_msg():
     try:
-        # 餐厅类型消费次数
-        data = Useritem.query(Useritem.item_cat, func.count(Useritem.item_cat)).group_by(Useritem.item_cat).all()
-        print(data)
-        print(type(data))
+        # 餐厅类型比例图
+        cat_count = Rest.query(Rest.item_cat, func.count(Rest.item_cat)).group_by(Rest.item_cat).all()
+        print(cat_count)
+        print(type(cat_count))
+
+        # 一年各餐厅消费次数
+        consumer_count = Useritem.query(Rest.item_cat, func.count(Useritem)).join(Rest, Rest.item_id == Useritem.item_id).group_by(Rest.item_cat).all()
+        print(consumer_count)
+        print(type(consumer_count))
     except Exception as e:
         raise e
         return return_json(code=0, msg='失败')
