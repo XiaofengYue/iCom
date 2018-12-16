@@ -34,10 +34,12 @@ def get_pic_id():
         books = ''
         for item in items:
             books += item['review']
+        print(books)
         if get_pic(books):
             return return_json(data='http://www.pipicat.top/static/iCom_images/ciyun.jpg')
 
-    except Exception:
+    except Exception as e:
+        raise e
         return return_json(code=0, msg='失败')
 
 
