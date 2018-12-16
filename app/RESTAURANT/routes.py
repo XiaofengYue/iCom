@@ -83,7 +83,7 @@ def get_com_id():
         return return_json(code=0, msg='失败')
 
 
-@rests.route('/rest/msg')
+@rests.route('/rest/msg', methods=['POST'])
 def get_msg():
     try:
         # 餐厅类型消费次数
