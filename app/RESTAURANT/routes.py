@@ -10,13 +10,13 @@ def return_json(code=200, msg='成功', data=None):
     return jsonify({'code': code, 'msg': msg, 'data': data})
 
 
-@rests('/rest/allrest', methods=['POST'])
+@rests.route('/rest/allrest', methods=['POST'])
 def get_all():
     rests = Rest.query.all()
     return return_json(data=[rest.to_dict() for rest in rests])
 
 
-@rests('/rest/byid', methods=['POST'])
+@rests.route('/rest/byid', methods=['POST'])
 def get_id():
     try:
         p_id = request.json.get("id")
@@ -26,7 +26,7 @@ def get_id():
         return return_json(code=0, msg='失败')
 
 
-@rests('/rest/picbyid', methods=['POST'])
+@rests.route('/rest/picbyid', methods=['POST'])
 def get_pic_id():
     try:
         p_id = request.json.get("id")
@@ -70,7 +70,7 @@ def get_pic(books):
     return True
 
 
-@rests('/rest/combyid', methods=['POST'])
+@rests.route('/rest/combyid', methods=['POST'])
 def get_com_id():
     try:
         p_id = request.json.get("id")
