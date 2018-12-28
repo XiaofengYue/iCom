@@ -22,8 +22,9 @@ def get_id():
     try:
         p_id = request.json.get("id")
         rest = Rest.query.filter(Rest.item_id == p_id).first()
-        return return_json(data=rest.to_dict)
-    except Exception:
+        return return_json(data=rest.to_dict())
+    except Exception as e:
+        raise e
         return return_json(code=0, msg='失败')
 
 
@@ -36,15 +37,17 @@ def get_pic_id():
         for item in items:
             books += item.review
         print(books)
-        if get_pic(books):
-            return return_json(data='http://www.pipicat.top/static/iCom_images/ciyun.jpg')
+        if books == '':
+            return return_json(code=1,msg='无评论')
+        if get_pic(books, p_id):
+            return return_json(data='http://www.pipicat.top/static/iCom_images/'+str(p_id)+'ciyun.jpg')
 
     except Exception as e:
         raise e
         return return_json(code=0, msg='失败')
 
 
-def get_pic(books):
+def get_pic(books, p_id):
     words = jieba.lcut(books)
     excludes = {'团购', '点评', '这么', '就是', '只是', '有点', '今天', '这么', '为啥', '下次', '里面'}
     counts = {}
@@ -54,7 +57,8 @@ def get_pic(books):
         else:
             counts[word] = counts.get(word, 0) + 1
     for word in excludes:
-        del(counts[word])
+        if word in counts:
+            del(counts[word])
 
     items = list(counts.items())
     items.sort(key=lambda x: x[1], reverse=True)
@@ -68,7 +72,7 @@ def get_pic(books):
 
     font = r'SimSun.ttf'
     wc = WordCloud(font_path=font, background_color='white', width=1000, height=800,).generate(string)
-    wc.to_file('/home/yxf/myproject/flask_demo/flaskblog/static/iCom_images/ciyun.jpg')
+    wc.to_file('/home/yxf/myproject/flask_demo/flaskblog/static/iCom_images/'+str(p_id)+'ciyun.jpg')
 
     return True
 
