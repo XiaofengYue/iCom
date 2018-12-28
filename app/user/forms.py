@@ -24,7 +24,7 @@ class User(db.Model):
     def verify_password(self, password):
         return pwd_context.verify(password, self.user_pwd_hash)
 
-    def generate_auth_token(self, expiration=60 * 24 * 7):
+    def generate_auth_token(self, expiration=28 * 60 * 60 * 24 * 7):
         s = Serializer(app.config['SECRET_KEY'], expires_in=expiration)
         return s.dumps({'user_num': self.user_num})
 
